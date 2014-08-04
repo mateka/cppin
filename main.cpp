@@ -6,14 +6,37 @@
 #include <unordered_set>
 #include <map>
 #include <unordered_map>
+#include <string>
 
 #include "in.hpp"
 
+template<typename ValueType>
+struct printer {
+	printer(const ValueType& val) {
+		std::cout << "\t\tvalue = " << val << std::endl;
+	}
+};
+
+template<typename Key, typename Value>
+struct printer<std::pair<Key, Value>> {
+	printer(const std::pair<Key, Value>& val) {
+		std::cout << "\t\tvalue = (" << val.first << ", " << val.second << ")" << std::endl;
+	}
+};
+
+template<typename ValueType> void print(const ValueType& val) {
+	printer<ValueType> p = val;
+}
+
 template<typename C>
 void check(const int e, const C& c) {
-	std::cout
-		<< "\t" << e << ((e in c) ? " is" : " is not")
-		<< " in given collection: " << typeid(c).name() << std::endl;
+	if(auto pos = e in c) {
+		std::cout << "\t" << e << " is in given collection: " << typeid(c).name() << std::endl;
+		print(*pos.position());
+	}
+	else {
+		std::cout << "\t" << e << " is not in given collection: " << typeid(c).name() << std::endl;
+	}
 }
 
 int main() {

@@ -1,24 +1,49 @@
 #pragma once
 
-#include "finder.hpp"
+#include <algorithm>
+
+#include "has_find.hpp"
+#include "iterator_type.hpp"
 
 namespace mad {
 namespace cppin {
 namespace details {
 
-template<typename Element, typename Collection>
-class in_impl {
+template<typename Collection>
+class in_impl_base {
 public:
-	in_impl(const Element& e, const Collection& c)
-		: c_(c), e_(e) {}
+	typedef typename iterator_type<Collection>::type iterator;
+
+	in_impl_base(const iterator& position, const iterator& end)
+		: position_(position), end_(end) {}
 
 	explicit operator bool() const {
-		return find_impl(e_, c_);
+		return end_ != position_;
+	}
+
+	iterator position() const {
+		return position_;
 	}
 private:
-	const Collection& c_;
-	const Element& e_;
+	iterator position_;
+	iterator end_;
 };
+
+template<typename Element, typename Collection, bool HasMemberFind = false>
+class in_impl : public in_impl_base<Collection> {
+public:
+	in_impl(const Element& e, const Collection& c)
+		: in_impl_base<Collection>(std::find(std::begin(c), std::end(c), e), std::end(c)) {}
+};
+
+template<typename Element, typename Collection>
+class in_impl<Element, Collection, true> : public in_impl_base<Collection> {
+public:
+	in_impl(const Element& e, const Collection& c)
+		: in_impl_base<Collection>(c.find(e), std::end(c)) {}
+};
+
+template<typename Element, typename Collection> using in_implementation = in_impl<Element, Collection, has_member_find<Collection>::value>;
 
 template<typename Element>
 class in_left {
@@ -26,9 +51,9 @@ public:
 	in_left(const Element& e) : e_(e) {}
 
 	template<typename Collection> friend
-	in_impl<Element, Collection> operator<<(const in_left<Element>& l,
+		in_implementation<Element, Collection> operator<<(const in_left<Element>& l,
 											const Collection& c) {
-		return in_impl<Element, Collection>(l.e_, c);
+		return in_implementation<Element, Collection>(l.e_, c);
 	}
 private:
 	const Element& e_;
@@ -40,9 +65,9 @@ public:
 	in_right(const Collection& c) : c_(c) {}
 
 	template<typename Element> friend
-	in_impl<Element, Collection> operator<<(const Element& e,
+		in_implementation<Element, Collection> operator<<(const Element& e,
 											const in_right<Collection>& r) {
-		return in_impl<Element, Collection>(e, r.c_);
+		return in_implementation<Element, Collection>(e, r.c_);
 	}
 private:
 	const Collection& c_;
