@@ -14,7 +14,7 @@ class in_impl_base {
 public:
 	typedef typename iterator_type<Collection>::type iterator;
 
-	in_impl_base(const iterator& position, const iterator& end)
+	in_impl_base(iterator position, iterator end)
 		: position_(position), end_(end) {}
 
 	explicit operator bool() const {
