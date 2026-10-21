@@ -21,3 +21,6 @@
 *.app
 /Debug
 *.suo
+
+/CMakeUserPresets.json
+/build
