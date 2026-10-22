@@ -1,49 +1,37 @@
 #pragma once
 
-#include <type_traits>
-
-#include <set>
-#include <unordered_set>
 #include <map>
+#include <set>
+#include <type_traits>
 #include <unordered_map>
+#include <unordered_set>
 
 namespace mad::cppin {
 
 // Has a template for collection member function find?
-template<template<typename...> class TCollection>
+template <template <typename...> class TCollection>
 struct template_has_member_find : std::false_type {};
 
-template<>
-struct template_has_member_find<std::set> : std::true_type {};
+template <> struct template_has_member_find<std::set> : std::true_type {};
 
-template<>
-struct template_has_member_find<std::multiset> : std::true_type {};
+template <> struct template_has_member_find<std::multiset> : std::true_type {};
 
-template<>
-struct template_has_member_find<std::map> : std::true_type {};
+template <> struct template_has_member_find<std::map> : std::true_type {};
 
-template<>
-struct template_has_member_find<std::multimap> : std::true_type {};
+template <> struct template_has_member_find<std::multimap> : std::true_type {};
 
-template<>
-struct template_has_member_find<std::unordered_set> : std::true_type {};
+template <> struct template_has_member_find<std::unordered_set> : std::true_type {};
 
-template<>
-struct template_has_member_find<std::unordered_multiset> : std::true_type {};
+template <> struct template_has_member_find<std::unordered_multiset> : std::true_type {};
 
-template<>
-struct template_has_member_find<std::unordered_map> : std::true_type {};
+template <> struct template_has_member_find<std::unordered_map> : std::true_type {};
 
-template<>
-struct template_has_member_find<std::unordered_multimap> : std::true_type {};
-
+template <> struct template_has_member_find<std::unordered_multimap> : std::true_type {};
 
 // Has a concrete type member function find?
-template<typename Collection, typename... Args>
-struct has_member_find : public std::false_type {};
+template <typename Collection, typename... Args> struct has_member_find : public std::false_type {};
 
-template<template<typename...> class Collection, typename... Args>
-struct has_member_find<Collection<Args...>> : template_has_member_find <Collection> {};
+template <template <typename...> class Collection, typename... Args>
+struct has_member_find<Collection<Args...>> : template_has_member_find<Collection> {};
 
-
-}
+}  // namespace mad::cppin

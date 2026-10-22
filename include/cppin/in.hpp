@@ -8,89 +8,86 @@
 namespace mad::cppin {
 namespace details {
 
-template<typename Collection>
-class in_impl_base {
+template <typename Collection> class in_impl_base {
 public:
-	using iterator = iterator_type<Collection>::type;
+    using iterator = iterator_type<Collection>::type;
 
-	in_impl_base(iterator position, iterator end)
-		: position_(position), end_(end) {}
+    in_impl_base(iterator position, iterator end) : position_(position), end_(end) {}
 
-	explicit operator bool() const {
-		return end_ != position_;
-	}
+    explicit operator bool() const { return end_ != position_; }
 
-	[[nodiscard]]
-	iterator position() const {
-		return position_;
-	}
+    [[nodiscard]]
+    iterator position() const {
+        return position_;
+    }
+
 private:
-	iterator position_;
-	iterator end_;
+    iterator position_;
+    iterator end_;
 };
 
-template<typename Element, typename Collection, bool HasMemberFind = false>
+template <typename Element, typename Collection, bool HasMemberFind = false>
 class in_impl : public in_impl_base<Collection> {
 public:
-	in_impl(const Element& e, const Collection& c)
-		: in_impl_base<Collection>(std::find(std::begin(c), std::end(c), e), std::end(c)) {}
+    in_impl(const Element& e, const Collection& c)
+        : in_impl_base<Collection>(std::find(std::begin(c), std::end(c), e), std::end(c)) {}
 };
 
-template<typename Element, typename Collection>
+template <typename Element, typename Collection>
 class in_impl<Element, Collection, true> : public in_impl_base<Collection> {
 public:
-	in_impl(const Element& e, const Collection& c)
-		: in_impl_base<Collection>(c.find(e), std::end(c)) {}
+    in_impl(const Element& e, const Collection& c)
+        : in_impl_base<Collection>(c.find(e), std::end(c)) {}
 };
 
-template<typename Element, typename Collection> using in_implementation = in_impl<Element, Collection, has_member_find<Collection>::value>;
+template <typename Element, typename Collection>
+using in_implementation = in_impl<Element, Collection, has_member_find<Collection>::value>;
 
-template<typename Element>
-class in_left {
+template <typename Element> class in_left {
 public:
-	in_left(const Element& e) : e_(e) {}
+    in_left(const Element& e) : e_(e) {}
 
-	template<typename Collection> friend
-		in_implementation<Element, Collection> operator<<(const in_left<Element>& l,
-											const Collection& c) {
-		return in_implementation<Element, Collection>(l.e_, c);
-	}
+    template <typename Collection>
+    friend in_implementation<Element, Collection> operator<<(const in_left<Element>& l,
+                                                             const Collection& c) {
+        return in_implementation<Element, Collection>(l.e_, c);
+    }
+
 private:
-	const Element& e_;
+    const Element& e_;
 };
 
-template<typename Collection>
-class in_right {
+template <typename Collection> class in_right {
 public:
-	in_right(const Collection& c) : c_(c) {}
+    in_right(const Collection& c) : c_(c) {}
 
-	template<typename Element> friend
-		in_implementation<Element, Collection> operator<<(const Element& e,
-											const in_right<Collection>& r) {
-		return in_implementation<Element, Collection>(e, r.c_);
-	}
+    template <typename Element>
+    friend in_implementation<Element, Collection> operator<<(const Element& e,
+                                                             const in_right<Collection>& r) {
+        return in_implementation<Element, Collection>(e, r.c_);
+    }
+
 private:
-	const Collection& c_;
+    const Collection& c_;
 };
 
-}	// details
+}  // namespace details
 
 struct in_type {};
 
-template<typename Element>
-details::in_left<Element> operator<<(const Element& e, const in_type) {
-	return details::in_left<Element>(e);
+template <typename Element> details::in_left<Element> operator<<(const Element& e, const in_type) {
+    return details::in_left<Element>(e);
 }
 
-template<typename Collection>
+template <typename Collection>
 details::in_right<Collection> operator<<(const in_type, const Collection& c) {
-	return details::in_right<Collection>(c);
+    return details::in_right<Collection>(c);
 }
 
 namespace {
 const in_type in_;
-}	// anon namespace
-}
+}  // namespace
+}  // namespace mad::cppin
 
 #ifndef NO_IN_MACRO
 #define in << ::mad::cppin::in_ <<
