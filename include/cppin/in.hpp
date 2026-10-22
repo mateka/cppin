@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <concepts>
+#include <optional>
 #include <ranges>
 
 namespace mad::cppin {
@@ -28,37 +29,19 @@ constexpr auto find_position(Collection&& c, const Element& e) -> in_unsafe_iter
     }
 }
 
-template <typename Element, typename Collection> class in_implementation {
-public:
-    using iterator = in_iterator_t<Collection>;
-
-    constexpr in_implementation(const Element& e, const std::remove_reference_t<Collection>& c)
-        : in_implementation{find_position(c, e), std::ranges::end(c)} {}
-
-    constexpr explicit operator bool() const { return found_; }
-
-    [[nodiscard]]
-    constexpr iterator position() const {
-        return position_;
-    }
-
-private:
-    constexpr in_implementation(in_unsafe_iterator_t<Collection> pos,
-                                in_unsafe_iterator_t<Collection> end)
-        : position_{pos}, found_{pos != end} {}
-
-    const iterator position_;
-    const bool found_;
-};
-
 template <typename Element> class in_left {
 public:
     constexpr in_left(const Element& e) : e_{e} {}
 
     template <typename Collection>
-    friend constexpr in_implementation<Element, Collection> operator<<(const in_left<Element>& l,
-                                                                       Collection&& c) {
-        return in_implementation<Element, Collection>{l.e_, c};
+    friend constexpr std::optional<in_iterator_t<Collection>> operator<<(const in_left<Element>& l,
+                                                                         Collection&& c) {
+        // NOLINTNEXTLINE(readability-qualified-auto)
+        const auto position = find_position(c, l.e_);
+        if (position != std::ranges::cend(c)) {
+            return in_iterator_t<Collection>{position};
+        }
+        return std::nullopt;
     }
 
 private:

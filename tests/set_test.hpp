@@ -10,7 +10,7 @@ TEST_CASE_TEMPLATE_DEFINE("check set-like cases", TSet, set_like_test_case) {
         auto positive = GENERATE(2, 10);
         auto positive_result = positive << mad::cppin::in_ << collection;
         REQUIRE(positive_result);
-        CHECK(*positive_result.position() == positive);
+        CHECK(**positive_result == positive);
     }
 
     SUBCASE("absent") {
@@ -23,8 +23,8 @@ TEST_CASE_TEMPLATE_DEFINE("check set-like cases", TSet, set_like_test_case) {
         CHECK(result);
     }
 
-    static_assert(std::is_same_v<decltype((2 << mad::cppin::in_ << collection).position()),
-                                 decltype(std::cbegin(collection))>);
-    static_assert(std::is_same_v<decltype((2 << mad::cppin::in_ << TSet{2}).position()),
-                                 std::ranges::dangling>);
+    static_assert(std::is_same_v<decltype((2 << mad::cppin::in_ << collection)),
+                                 std::optional<decltype(std::cbegin(collection))>>);
+    static_assert(std::is_same_v<decltype((2 << mad::cppin::in_ << TSet{2})),
+                                 std::optional<std::ranges::dangling>>);
 }

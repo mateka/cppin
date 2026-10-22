@@ -12,10 +12,10 @@ TEST_CASE("check in macro") {
     auto fifty = 50.0f in array;
     auto ten = 10.0f in array;
     auto one = 1.0f in array;
-    CHECK(two);
-    CHECK(two.position() == &(array[1]));
-    CHECK(ten);
-    CHECK(ten.position() == &(array[3]));
+    REQUIRE(two);
+    CHECK(two == &(array[1]));
+    REQUIRE(ten);
+    CHECK(ten == &(array[3]));
     CHECK_FALSE(fifty);
     CHECK_FALSE(one);
 }
@@ -23,6 +23,6 @@ TEST_CASE("check in macro") {
 TEST_CASE("readme example 1") {
     std::map<int, std::string> dict{{1, "one"}, {2, "two"}};
     if (auto p = 2 in dict) {
-        std::cout << p.position()->second << "\n";  // prints: "two"
+        std::cout << (*p)->second << "\n";  // prints: "two"
     }
 }

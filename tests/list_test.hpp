@@ -11,7 +11,7 @@ TEST_CASE_TEMPLATE_DEFINE("check list-like cases", TList, list_like_test_case) {
         auto positive = GENERATE(std::pair{2, 1}, std::pair{10, 3});
         auto positive_result = positive.first << mad::cppin::in_ << collection;
         REQUIRE(positive_result);
-        auto result_index = std::distance(std::cbegin(collection), positive_result.position());
+        auto result_index = std::distance(std::cbegin(collection), *positive_result);
         CHECK(positive.second == result_index);
     }
 
@@ -25,8 +25,8 @@ TEST_CASE_TEMPLATE_DEFINE("check list-like cases", TList, list_like_test_case) {
         CHECK(result);
     }
 
-    static_assert(std::is_same_v<decltype((2 << mad::cppin::in_ << collection).position()),
-                                 decltype(std::cbegin(collection))>);
-    static_assert(std::is_same_v<decltype((2 << mad::cppin::in_ << TList{2}).position()),
-                                 std::ranges::dangling>);
+    static_assert(std::is_same_v<decltype((2 << mad::cppin::in_ << collection)),
+                                 std::optional<decltype(std::cbegin(collection))>>);
+    static_assert(std::is_same_v<decltype((2 << mad::cppin::in_ << TList{2})),
+                                 std::optional<std::ranges::dangling>>);
 }

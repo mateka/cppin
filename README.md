@@ -11,7 +11,7 @@ Python's `in` in c++:
 
 std::map<int, std::string> dict{{1, "one"}, {2, "two"}};
 if (auto p = 2 in dict) {
-    std::cout << p.position()->second << std::endl;  // prints: "two"
+    std::cout << (*p)->second << std::endl;  // prints: "two"
 }
 ```
 It is slightly more powerful than `in` in Python and c++20 `contains`, because it does both things:
@@ -31,7 +31,7 @@ using namespace mad::cppin;
 
 std::map<int, std::string> dict{{1, "one"}, {2, "two"}};
 if (auto p = 2 << in_ << dict) {
-    std::cout << p.position()->second << std::endl;  // prints: "two"
+    std::cout << (*p)->second << std::endl;  // prints: "two"
 }
 ```
 
