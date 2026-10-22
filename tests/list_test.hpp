@@ -1,3 +1,4 @@
+#include <type_traits>
 #include <utility>
 
 #include <doctest/doctest.h>
@@ -18,4 +19,14 @@ TEST_CASE_TEMPLATE_DEFINE("check list-like cases", TList, list_like_test_case) {
         auto negative = GENERATE(50, 1);
         CHECK_FALSE((negative << mad::cppin::in_ << collection));
     }
+
+    SUBCASE("Test in result cast to bool with temporary collection") {
+        auto result = static_cast<bool>(1 << mad::cppin::in_ << TList{1});
+        CHECK(result);
+    }
+
+    static_assert(std::is_same_v<decltype((2 << mad::cppin::in_ << collection).position()),
+                                 decltype(std::cbegin(collection))>);
+    static_assert(std::is_same_v<decltype((2 << mad::cppin::in_ << TList{2}).position()),
+                                 std::ranges::dangling>);
 }
