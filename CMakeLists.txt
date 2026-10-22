@@ -16,9 +16,7 @@ target_sources(
         FILE_SET HEADERS
         BASE_DIRS include
         FILES
-            include/cppin/has_find.hpp
             include/cppin/in.hpp
-            include/cppin/iterator_type.hpp
 )
 
 

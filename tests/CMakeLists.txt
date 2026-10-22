@@ -35,6 +35,7 @@ set(
         unordered_set.cpp
         map.cpp
         unordered_map.cpp
+        span.cpp
 )
 
 foreach(variant IN ITEMS macro no_macro)
