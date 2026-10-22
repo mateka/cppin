@@ -1,5 +1,6 @@
-#include "list_test.hpp"
 #include <set>
 
+#include "set_test.hpp"
 
-TEST_CASE_TEMPLATE_INVOKE(test_id, std::set<int>);
+
+TEST_CASE_TEMPLATE_INVOKE(set_like_test_case, std::set<int>);

@@ -11,7 +11,7 @@ add_library(cppin::cppin ALIAS cppin)
 target_compile_features(cppin INTERFACE cxx_std_26)
 target_sources(
     cppin
-    PUBLIC
+    INTERFACE
         FILE_SET HEADERS
         BASE_DIRS include
         FILES
