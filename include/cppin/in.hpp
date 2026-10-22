@@ -60,6 +60,6 @@ constexpr details::in_left<Element> operator<<(const Element& e, const in_type) 
 inline constexpr in_type in_{};
 }  // namespace mad::cppin
 
-#ifndef NO_IN_MACRO
+#ifdef CPPIN_ENABLE_IN_MACRO
 #define in << ::mad::cppin::in_ <<
 #endif
