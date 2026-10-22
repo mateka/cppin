@@ -26,7 +26,7 @@ endif()
 
 set(
     CPPIN_TEST_SOURCES
-        example_2.cpp
+        example_1.cpp
         vector.cpp
         list.cpp
         array.cpp
@@ -48,4 +48,4 @@ foreach(variant IN ITEMS macro no_macro)
 endforeach()
 
 target_sources(cppin_tests_macro PRIVATE macro.cpp)
-target_compile_definitions(cppin_tests_no_macro PRIVATE NO_IN_MACRO)
+target_compile_definitions(cppin_tests_macro PRIVATE CPPIN_ENABLE_IN_MACRO)

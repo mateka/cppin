@@ -20,7 +20,7 @@ TEST_CASE("check in macro") {
     CHECK_FALSE(one);
 }
 
-TEST_CASE("readme example 1") {
+TEST_CASE("readme example 2") {
     std::map<int, std::string> dict{{1, "one"}, {2, "two"}};
     if (auto p = 2 in dict) {
         std::cout << (*p)->second << "\n";  // prints: "two"

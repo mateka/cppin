@@ -9,8 +9,10 @@ Python's `in` in c++:
 
 #include <cppin/in.hpp>
 
+using mad::cppin::in_;
+
 std::map<int, std::string> dict{{1, "one"}, {2, "two"}};
-if (auto p = 2 in dict) {
+if (auto p = 2 << in_ << dict) {
     std::cout << (*p)->second << std::endl;  // prints: "two"
 }
 ```
@@ -18,22 +20,23 @@ It is slightly more powerful than `in` in Python and c++20 `contains`, because i
 1. Check if the key is in the container
 2. If it is, return an iterator to the element
 
-Using `NO_IN_MACRO` would disable the `in` macro and the code would look like this:
+Using `CPPIN_ENABLE_IN_MACRO` would enable the `in` macro and the code would look like this:
 ```cpp
 #include <iostream>
 #include <map>
 #include <string>
 
-#define NO_IN_MACRO
+#define CPPIN_ENABLE_IN_MACRO
 #include <cppin/in.hpp>
 
-using namespace mad::cppin;
-
 std::map<int, std::string> dict{{1, "one"}, {2, "two"}};
-if (auto p = 2 << in_ << dict) {
+if (auto p = 2 in dict) {
     std::cout << (*p)->second << std::endl;  // prints: "two"
 }
 ```
+
+> [!WARNING]
+> With CPPIN_ENABLE_IN_MACRO, include <cppin/in.hpp> as the last header — the in macro breaks headers that use in as an identifier (e.g. <iostream>).
 
 Currently it requires c++26 and is tested on gcc 14 and llvm 23.
 
