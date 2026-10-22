@@ -9,10 +9,10 @@ TEST_CASE("check in_ for builtin array") {
     SUBCASE("positive") {
         auto two = 2.0f << mad::cppin::in_ << array;
         auto ten = 10.0f << mad::cppin::in_ << array;
-        CHECK(two);
-        CHECK(two.position() == &(array[1]));
-        CHECK(ten);
-        CHECK(ten.position() == &(array[3]));
+        REQUIRE(two);
+        CHECK(two == &(array[1]));
+        REQUIRE(ten);
+        CHECK(ten == &(array[3]));
     }
 
     SUBCASE("negative") {
@@ -26,9 +26,8 @@ TEST_CASE("check in_ for builtin array") {
         CHECK(result);
     }
 
-    static_assert(std::is_same_v<decltype((2.0f << mad::cppin::in_ << array).position()),
-                                 decltype(std::cbegin(array))>);
-    static_assert(
-        std::is_same_v<decltype((2.0f << mad::cppin::in_ << float_array_t{2.0f}).position()),
-                       std::ranges::dangling>);
+    static_assert(std::is_same_v<decltype((2.0f << mad::cppin::in_ << array)),
+                                 std::optional<decltype(std::cbegin(array))>>);
+    static_assert(std::is_same_v<decltype((2.0f << mad::cppin::in_ << float_array_t{2.0f})),
+                                 std::optional<std::ranges::dangling>>);
 }

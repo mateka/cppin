@@ -12,8 +12,8 @@ TEST_CASE_TEMPLATE_DEFINE("check dict-like cases", TDict, dict_like_test_case) {
         auto positive = GENERATE(std::pair{2, "two"}, std::pair{10, "ten"});
         auto positive_result = positive.first << mad::cppin::in_ << collection;
         REQUIRE(positive_result);
-        CHECK(positive_result.position()->first == positive.first);
-        CHECK(positive_result.position()->second == positive.second);
+        CHECK((*positive_result)->first == positive.first);
+        CHECK((*positive_result)->second == positive.second);
     }
 
     SUBCASE("absent") {
@@ -26,8 +26,8 @@ TEST_CASE_TEMPLATE_DEFINE("check dict-like cases", TDict, dict_like_test_case) {
         CHECK(result);
     }
 
-    static_assert(std::is_same_v<decltype((2 << mad::cppin::in_ << collection).position()),
-                                 decltype(std::cbegin(collection))>);
-    static_assert(std::is_same_v<decltype((2 << mad::cppin::in_ << TDict{{2, "two"}}).position()),
-                                 std::ranges::dangling>);
+    static_assert(std::is_same_v<decltype((2 << mad::cppin::in_ << collection)),
+                                 std::optional<decltype(std::cbegin(collection))>>);
+    static_assert(std::is_same_v<decltype((2 << mad::cppin::in_ << TDict{{2, "two"}})),
+                                 std::optional<std::ranges::dangling>>);
 }

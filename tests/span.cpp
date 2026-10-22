@@ -12,10 +12,11 @@ TEST_CASE("check in_ for temporary std::span") {
     SUBCASE("positive") {
         auto two = 2.0 << mad::cppin::in_ << std::span<double>{arr};
         auto ten = 10.0 << mad::cppin::in_ << std::span<double>{arr};
-        CHECK(two);
-        CHECK(&*two.position() == &(arr[1]));
-        CHECK(ten);
-        CHECK(&*ten.position() == &(arr[3]));
+        const std::span<double> view{arr};
+        REQUIRE(two);
+        CHECK(two == view.begin() + 1);
+        REQUIRE(ten);
+        CHECK(ten == view.begin() + 3);
     }
 
     SUBCASE("negative") {
@@ -23,7 +24,6 @@ TEST_CASE("check in_ for temporary std::span") {
         CHECK_FALSE((1.0 << mad::cppin::in_ << std::span<double>{arr}));
     }
 
-    static_assert(
-        std::is_same_v<decltype((2.0 << mad::cppin::in_ << std::span<double>{arr}).position()),
-                       std::span<double>::iterator>);
+    static_assert(std::is_same_v<decltype((2.0 << mad::cppin::in_ << std::span<double>{arr})),
+                                 std::optional<std::span<double>::iterator>>);
 }
