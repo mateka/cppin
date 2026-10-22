@@ -3,7 +3,7 @@
 
 
 TEST_CASE("check in_ for builtin array") {
-    float array[] = { 3.0f, 2.0f, 7.0f, 10.0f };
+    float array[] = { 3.0f, 2.0f, 7.0f, 10.0f };  // NOLINT(modernize-avoid-c-arrays)
     auto two = 2.0f << mad::cppin::in_ << array;
     auto ten = 10.0f << mad::cppin::in_ << array;
     CHECK(two);
