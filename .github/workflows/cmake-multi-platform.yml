@@ -23,6 +23,24 @@ jobs:
           ninja: true
       - run: cmake --workflow --preset ci
 
+  asan:
+    name: sanitizers (ASan + UBSan)
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: ubuntu-24.04, compiler: llvm-23 }
+          - { os: macos-latest, compiler: llvm-23 }
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: aminya/setup-cpp@v1
+        with:
+          compiler: ${{ matrix.compiler }}
+          cmake: true
+          ninja: true
+      - run: cmake --workflow --preset asan
+
   lint:
     name: clang-format / clang-tidy
     runs-on: ubuntu-24.04
