@@ -5,14 +5,13 @@
 #include "has_find.hpp"
 #include "iterator_type.hpp"
 
-namespace mad {
-namespace cppin {
+namespace mad::cppin {
 namespace details {
 
 template<typename Collection>
 class in_impl_base {
 public:
-	typedef typename iterator_type<Collection>::type iterator;
+	using iterator = iterator_type<Collection>::type;
 
 	in_impl_base(iterator position, iterator end)
 		: position_(position), end_(end) {}
@@ -21,6 +20,7 @@ public:
 		return end_ != position_;
 	}
 
+	[[nodiscard]]
 	iterator position() const {
 		return position_;
 	}
@@ -90,8 +90,7 @@ details::in_right<Collection> operator<<(const in_type, const Collection& c) {
 namespace {
 const in_type in_;
 }	// anon namespace
-}	// cppin
-}	// mad
+}
 
 #ifndef NO_IN_MACRO
 #define in << ::mad::cppin::in_ <<

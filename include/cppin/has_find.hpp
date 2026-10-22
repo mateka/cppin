@@ -7,8 +7,7 @@
 #include <map>
 #include <unordered_map>
 
-namespace mad {
-namespace cppin {
+namespace mad::cppin {
 
 // Has a template for collection member function find?
 template<template<typename...> class TCollection>
@@ -47,5 +46,4 @@ template<template<typename...> class Collection, typename... Args>
 struct has_member_find<Collection<Args...>> : template_has_member_find <Collection> {};
 
 
-}	// cppin
-}	// mad
+}
