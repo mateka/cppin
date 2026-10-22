@@ -1,12 +1,13 @@
 #include <iostream>
 #include <map>
 #include <string>
+
 #include <doctest/doctest.h>
+
 #include <cppin/in.hpp>
 
-
 TEST_CASE("check in macro") {
-    float array[] = { 3.0f, 2.0f, 7.0f, 10.0f };  // NOLINT(modernize-avoid-c-arrays)
+    float array[] = {3.0f, 2.0f, 7.0f, 10.0f};  // NOLINT(modernize-avoid-c-arrays)
     auto two = 2.0f in array;
     auto fifty = 50.0f in array;
     auto ten = 10.0f in array;
@@ -18,7 +19,6 @@ TEST_CASE("check in macro") {
     CHECK_FALSE(fifty);
     CHECK_FALSE(one);
 }
-
 
 TEST_CASE("readme example 1") {
     std::map<int, std::string> dict{{1, "one"}, {2, "two"}};
