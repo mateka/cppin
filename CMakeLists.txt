@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.25...4.4)
 project(cppin VERSION 0.1.0 LANGUAGES CXX)
 
 option(CPPIN_BUILD_TESTS "Build cppin tests" ${PROJECT_IS_TOP_LEVEL})
+option(CPPIN_CLANG_TIDY "Run clang-tidy while building cppin tests" OFF)
 
 
 add_library(cppin INTERFACE)
@@ -24,4 +25,8 @@ target_sources(
 if(CPPIN_BUILD_TESTS)
   enable_testing()
   add_subdirectory(tests)
+endif()
+
+if(PROJECT_IS_TOP_LEVEL)
+  include(cmake/format.cmake)
 endif()

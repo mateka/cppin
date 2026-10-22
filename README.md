@@ -44,3 +44,13 @@ cmake --preset debug
 cmake --build --preset debug
 ctest --preset debug
 ```
+
+Development
+-----------
+```bash
+cmake --workflow --preset ci       # configure, build and test with warnings as errors
+cmake --workflow --preset lint     # build with clang-tidy
+cmake --build --preset format      # format sources with clang-format (needs `cmake --preset debug` first)
+cmake --build --preset format-check
+```
+Presets `debug` and `asan` (address and undefined behaviour sanitizers) can be used with `cmake --preset`, `cmake --build --preset` and `ctest --preset`.
