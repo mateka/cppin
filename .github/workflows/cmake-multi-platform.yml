@@ -21,6 +21,20 @@ jobs:
           compiler: ${{ matrix.compiler }}
           cmake: true
           ninja: true
+      - run: cmake --workflow --preset ci
+
+  lint:
+    name: clang-format / clang-tidy
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - uses: aminya/setup-cpp@v1
+        with:
+          compiler: llvm-23
+          clang-format: 23
+          clang-tidy: 23
+          cmake: true
+          ninja: true
       - run: cmake --preset debug
-      - run: cmake --build --preset debug
-      - run: ctest --preset debug
+      - run: cmake --build --preset format-check
+      - run: cmake --workflow --preset lint

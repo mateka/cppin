@@ -3,9 +3,26 @@ FetchContent_Declare(doctest
   GIT_REPOSITORY https://github.com/doctest/doctest.git
   GIT_TAG        v2.5.3
   GIT_SHALLOW    TRUE
+  SYSTEM
   FIND_PACKAGE_ARGS 2.5)
 FetchContent_MakeAvailable(doctest)
 include(${doctest_SOURCE_DIR}/scripts/cmake/doctest.cmake)
+
+# Warning flags only for tests: the library is header-only, so it has no translation units of
+# its own, and users of cppin should not inherit our flags.
+add_library(cppin_warnings INTERFACE)
+target_compile_options(cppin_warnings INTERFACE
+  $<$<CXX_COMPILER_ID:GNU,Clang,AppleClang>:
+    -Wall;-Wextra;-Wpedantic;-Wshadow;-Wconversion;-Wsign-conversion;
+    -Wold-style-cast;-Wnull-dereference;-Wimplicit-fallthrough>)
+
+if(CPPIN_CLANG_TIDY)
+  find_program(
+      CLANG_TIDY_EXE
+      NAMES clang-tidy
+      REQUIRED
+  )
+endif()
 
 set(
     CPPIN_TEST_SOURCES
@@ -22,7 +39,10 @@ set(
 
 foreach(variant IN ITEMS macro no_macro)
   add_executable(cppin_tests_${variant} ${CPPIN_TEST_SOURCES})
-  target_link_libraries(cppin_tests_${variant} PRIVATE cppin::cppin doctest::doctest_with_main)
+  target_link_libraries(cppin_tests_${variant} PRIVATE cppin::cppin cppin_warnings doctest::doctest_with_main)
+  if(CPPIN_CLANG_TIDY)
+    set_target_properties(cppin_tests_${variant} PROPERTIES CXX_CLANG_TIDY "${CLANG_TIDY_EXE}")
+  endif()
   doctest_discover_tests(cppin_tests_${variant} TEST_SUFFIX " [${variant}]")
 endforeach()
 

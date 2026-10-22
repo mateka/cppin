@@ -1,12 +1,65 @@
 {
   "version": 6,
   "configurePresets": [
-    { "name": "debug",
+    {
+      "name": "base",
+      "hidden": true,
       "generator": "Ninja",
       "binaryDir": "${sourceDir}/build/${presetName}",
-      "cacheVariables": { "CMAKE_BUILD_TYPE": "Debug" } }
+      "cacheVariables": { "CMAKE_EXPORT_COMPILE_COMMANDS": "ON" }
+    },
+    {
+      "name": "debug",
+      "inherits": "base",
+      "cacheVariables": { "CMAKE_BUILD_TYPE": "Debug" }
+    },
+    {
+      "name": "ci",
+      "inherits": "debug",
+      "cacheVariables": { "CMAKE_COMPILE_WARNING_AS_ERROR": "ON" }
+    },
+    {
+      "name": "asan",
+      "inherits": "debug",
+      "cacheVariables": {
+        "CMAKE_CXX_FLAGS": "-fsanitize=address,undefined -fno-omit-frame-pointer",
+        "CMAKE_EXE_LINKER_FLAGS": "-fsanitize=address,undefined"
+      }
+    },
+    {
+      "name": "lint",
+      "inherits": "debug",
+      "cacheVariables": { "CPPIN_CLANG_TIDY": "ON" }
+    }
   ],
-  "buildPresets": [ { "name": "debug", "configurePreset": "debug" } ],
-  "testPresets":  [ { "name": "debug", "configurePreset": "debug",
-                      "output": { "outputOnFailure": true } } ]
+  "buildPresets": [
+    { "name": "debug", "configurePreset": "debug" },
+    { "name": "ci", "configurePreset": "ci" },
+    { "name": "asan", "configurePreset": "asan" },
+    { "name": "lint", "configurePreset": "lint" },
+    { "name": "format", "configurePreset": "debug", "targets": ["format"] },
+    { "name": "format-check", "configurePreset": "debug", "targets": ["format-check"] }
+  ],
+  "testPresets": [
+    { "name": "debug", "configurePreset": "debug", "output": { "outputOnFailure": true } },
+    { "name": "ci", "inherits": "debug", "configurePreset": "ci" },
+    { "name": "asan", "inherits": "debug", "configurePreset": "asan" }
+  ],
+  "workflowPresets": [
+    {
+      "name": "ci",
+      "steps": [
+        { "type": "configure", "name": "ci" },
+        { "type": "build", "name": "ci" },
+        { "type": "test", "name": "ci" }
+      ]
+    },
+    {
+      "name": "lint",
+      "steps": [
+        { "type": "configure", "name": "lint" },
+        { "type": "build", "name": "lint" }
+      ]
+    }
+  ]
 }
